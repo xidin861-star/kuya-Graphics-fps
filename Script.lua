@@ -182,7 +182,7 @@ end)
 -- 🌇 เวลา+ตัวสว่าง
 toggle(b4,function(on)
     if on then
-        Lighting.ClockTime=17.33
+        Lighting.ClockTime=17.83
         for _,p in pairs(Players:GetPlayers()) do
             if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
                 local l=Instance.new("PointLight",p.Character.HumanoidRootPart)
