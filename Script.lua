@@ -5,9 +5,9 @@ local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
--- 🔊 เสียง
-local function clickSound()
-    local s = Instance.new("Sound", workspace)
+-- 🎵 เสียง
+local function click()
+    local s = Instance.new("Sound",workspace)
     s.SoundId = "rbxassetid://12222216"
     s.Volume = 1
     s:Play()
@@ -27,113 +27,120 @@ local function rainbow(obj)
 end
 
 -- 📱 GUI
-local gui = Instance.new("ScreenGui", game.CoreGui)
+local gui = Instance.new("ScreenGui",game.CoreGui)
 gui.ResetOnSpawn = false
 
 -- 🔘 วงกลม
-local openBtn = Instance.new("TextButton", gui)
+local openBtn = Instance.new("TextButton",gui)
 openBtn.Size = UDim2.new(0,60,0,60)
 openBtn.Position = UDim2.new(0,20,0.5,-30)
 openBtn.Text = "FPS"
-openBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-openBtn.TextColor3 = Color3.new(1,1,1)
+openBtn.BackgroundColor3 = Color3.fromRGB(20,20,20)
 openBtn.Draggable = true
 Instance.new("UICorner",openBtn).CornerRadius = UDim.new(1,0)
-local st1 = Instance.new("UIStroke",openBtn) st1.Thickness=2 rainbow(st1)
+local st1 = Instance.new("UIStroke",openBtn)
+rainbow(st1)
 
 -- 📦 เมนู
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0,300,0,260)
-main.Position = UDim2.new(0.5,-150,0.5,-130)
+local main = Instance.new("Frame",gui)
+main.Size = UDim2.new(0,0,0,0)
+main.Position = UDim2.new(0.5,-170,0.5,-180)
 main.BackgroundColor3 = Color3.fromRGB(20,20,20)
 main.Visible = false
 main.Active = true
 main.Draggable = true
-Instance.new("UICorner",main)
-local st2 = Instance.new("UIStroke",main) rainbow(st2)
+Instance.new("UICorner",main).CornerRadius = UDim.new(0,10)
+local st2 = Instance.new("UIStroke",main)
+rainbow(st2)
 
 -- ❌ ปิด
-local close = Instance.new("TextButton", main)
+local close = Instance.new("TextButton",main)
 close.Size = UDim2.new(0,30,0,30)
 close.Position = UDim2.new(1,-35,0,5)
 close.Text = "X"
 close.BackgroundColor3 = Color3.fromRGB(255,0,0)
 
 -- 🏷️ ชื่อ
-local title = Instance.new("TextLabel", main)
+local title = Instance.new("TextLabel",main)
 title.Size = UDim2.new(1,0,0,30)
 title.Text = "kuya The graphics v1.00"
 title.BackgroundTransparency = 1
 title.TextColor3 = Color3.new(1,1,1)
 
 -- 🔘 ปุ่ม
-local function makeBtn(text,y)
+local function btn(name,y)
     local b = Instance.new("TextButton",main)
     b.Size = UDim2.new(0.9,0,0,40)
     b.Position = UDim2.new(0.05,0,0,y)
-    b.Text = text.." : OFF"
+    b.Text = name.." : OFF"
     b.BackgroundColor3 = Color3.fromRGB(255,0,0)
     b.TextColor3 = Color3.new(1,1,1)
     Instance.new("UICorner",b)
     return b
 end
 
-local b1 = makeBtn("ลบเสื้อผ้า+หน้า+ผม",40)
-local b2 = makeBtn("โลกดินน้ำมัน",90)
-local b3 = makeBtn("ลบต้นไม้+เอฟเฟค",140)
-local b4 = makeBtn("เวลา17:20+ตัวสว่าง",190)
+local b1 = btn("ลบเสื้อผ้า+หน้า+ผม",40)
+local b2 = btn("โลกดินน้ำมัน",90)
+local b3 = btn("ลบต้นไม้+เอฟเฟค",140)
+local b4 = btn("เวลา17:50+ตัวสว่าง",190)
+local b5 = btn("โลกสีเดียว",240)
+local b6 = btn("เอฟเฟคสีเดียว",290)
+
+main.Size = UDim2.new(0,340,0,340)
 
 -- 📊 FPS
 local fps = Instance.new("TextLabel",gui)
-fps.Position = UDim2.new(1,-120,0,10)
-fps.Size = UDim2.new(0,110,0,30)
+fps.Position = UDim2.new(1,-130,0,10)
+fps.Size = UDim2.new(0,120,0,30)
 fps.BackgroundColor3 = Color3.fromRGB(20,20,20)
 fps.TextScaled = true
-local st3 = Instance.new("UIStroke",fps) rainbow(st3)
+local st3 = Instance.new("UIStroke",fps)
+rainbow(st3)
 
-local f=0 t=tick()
+local f,l=0,tick()
 RunService.RenderStepped:Connect(function()
     f+=1
-    if tick()-t>=1 then
+    if tick()-l>=1 then
         fps.Text="FPS: "..f
-        f=0 t=tick()
+        f=0 l=tick()
     end
 end)
 
--- 🔘 เปิดปิด UI
+-- 🔘 เปิด UI
 openBtn.MouseButton1Click:Connect(function()
-    clickSound()
+    click()
     openBtn.Visible=false
     main.Visible=true
     main.Size=UDim2.new(0,0,0,0)
-    TweenService:Create(main,TweenInfo.new(0.3),{Size=UDim2.new(0,300,0,260)}):Play()
+    TweenService:Create(main,TweenInfo.new(0.3),{Size=UDim2.new(0,340,0,340)}):Play()
 end)
 
 close.MouseButton1Click:Connect(function()
-    clickSound()
+    click()
     main.Visible=false
     openBtn.Visible=true
 end)
 
--- 🔄 toggle
-local function toggle(btn,func)
+-- 🔁 toggle
+local function toggle(b,func)
     local on=false
-    btn.MouseButton1Click:Connect(function()
-        clickSound()
+    b.MouseButton1Click:Connect(function()
+        click()
         on=not on
-        btn.Text=btn.Text:split(":")[1].." : "..(on and "ON" or "OFF")
-        btn.BackgroundColor3=on and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+        b.Text=b.Text:split(":")[1].." : "..(on and "ON" or "OFF")
+        b.BackgroundColor3=on and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
         func(on)
     end)
 end
 
--- 💇 ลบเสื้อผ้า+หน้า+ผม
+-- 💇 ลบผม+หน้า+เสื้อ
 toggle(b1,function(on)
     if on then
         local function clean(c)
             for _,v in pairs(c:GetDescendants()) do
-                if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Decal") then v:Destroy() end
-                if v:IsA("Accessory") then v:Destroy() end
+                if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Decal") or v:IsA("Accessory") then
+                    v:Destroy()
+                end
             end
         end
         for _,p in pairs(Players:GetPlayers()) do
@@ -143,54 +150,80 @@ toggle(b1,function(on)
     end
 end)
 
--- 🌍 ดินน้ำมัน + เอฟเฟคสีเดียว
+-- 🌍 ดินน้ำมัน + เอฟเฟคดินน้ำมัน
 toggle(b2,function(on)
     if on then
         for _,v in pairs(workspace:GetDescendants()) do
             if v:IsA("BasePart") then
                 v.Material=Enum.Material.Plastic
-                v.Reflectance=0
             end
+            -- 🔥 เอฟเฟค = สีเดียว (เอาสีหลัก)
             if v:IsA("ParticleEmitter") then
-                local c=v.Color.Keypoints[1].Value
-                v.Color=ColorSequence.new(c) -- ทำสีเดียว
+                local col=v.Color.Keypoints[1].Value
+                v.Color=ColorSequence.new(col)
             end
         end
     end
 end)
 
--- 💥 ลบต้นไม้+เอฟเฟค
+-- 🌳 ลบต้นไม้ + เอฟเฟคหนัก
 toggle(b3,function(on)
     if on then
-        local function remove(v)
-            if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam")
-            or v:IsA("Explosion") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
+        for _,v in pairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter")
+            or v:IsA("Trail")
+            or v:IsA("Beam")
+            or v:IsA("Explosion") then
                 v:Destroy()
             end
             if v:IsA("BasePart") then
                 local n=v.Name:lower()
-                if n:find("tree") or n:find("grass") or n:find("leaf") then
+                if n:find("tree") or n:find("grass") then
                     v:Destroy()
                 end
             end
         end
-        for _,v in pairs(workspace:GetDescendants()) do remove(v) end
-        workspace.DescendantAdded:Connect(function(v) task.wait() remove(v) end)
     end
 end)
 
--- 🌇 เวลา+ตัวสว่าง
+-- 🌇 เวลา + ตัวสว่าง
 toggle(b4,function(on)
     if on then
         Lighting.ClockTime=17.83
+        Lighting.Brightness=3
+        Lighting.GlobalShadows=false
+
         for _,p in pairs(Players:GetPlayers()) do
-            if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                local l=Instance.new("PointLight",p.Character.HumanoidRootPart)
-                l.Brightness=2
-                l.Range=15
+            if p.Character then
+                local h=Instance.new("Highlight",p.Character)
+                h.FillColor=Color3.new(1,1,1)
             end
         end
     end
 end)
 
-print("🔥 kuya The graphics v1.00 โหลดแล้ว")
+-- 🎨 โลกสีเดียว
+toggle(b5,function(on)
+    if on then
+        local color=Color3.fromRGB(0,170,255) -- เปลี่ยนสีได้
+        for _,v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Color=color
+            end
+        end
+    end
+end)
+
+-- 🎨 เอฟเฟคสีเดียว
+toggle(b6,function(on)
+    if on then
+        local color=Color3.fromRGB(0,170,255)
+        for _,v in pairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter") then
+                v.Color=ColorSequence.new(color)
+            end
+        end
+    end
+end)
+
+print("🔥 kuya Graphics โหลดแล้ว")
