@@ -1,12 +1,11 @@
 repeat task.wait() until game:IsLoaded()
 
 local Players = game:GetService("Players")
-local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
--- 🎵 เสียงกด
-local function clickSound()
+-- 🎵 เสียง
+local function click()
     local s = Instance.new("Sound", workspace)
     s.SoundId = "rbxassetid://12222216"
     s.Volume = 1
@@ -14,51 +13,45 @@ local function clickSound()
     game.Debris:AddItem(s,1)
 end
 
--- 🌈 สร้างสีรุ้ง
-local function rainbow(stroke)
-    spawn(function()
-        while stroke.Parent do
+-- 🌈 สีรุ้ง
+local function rainbow(obj)
+    task.spawn(function()
+        while obj.Parent do
             for i=0,1,0.01 do
-                stroke.Color = Color3.fromHSV(i,1,1)
+                obj.Color = Color3.fromHSV(i,1,1)
                 task.wait()
             end
         end
     end)
 end
 
--- 📱 GUI หลัก
+-- 📱 GUI
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.ResetOnSpawn = false
 
--- 🔘 ปุ่มวงกลม
-local toggleBtn = Instance.new("TextButton", gui)
-toggleBtn.Size = UDim2.new(0,60,0,60)
-toggleBtn.Position = UDim2.new(0,20,0.5,-30)
-toggleBtn.Text = "FPS"
-toggleBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-toggleBtn.TextColor3 = Color3.new(1,1,1)
-toggleBtn.Draggable = true
-
-local uicorner = Instance.new("UICorner", toggleBtn)
-uicorner.CornerRadius = UDim.new(1,0)
-
--- 🌈 ขอบวงกลม
-local stroke1 = Instance.new("UIStroke", toggleBtn)
-stroke1.Thickness = 2
-rainbow(stroke1)
+-- 🔘 วงกลม
+local open = Instance.new("TextButton", gui)
+open.Size = UDim2.new(0,60,0,60)
+open.Position = UDim2.new(0,20,0.5,-30)
+open.Text = "FPS"
+open.BackgroundColor3 = Color3.fromRGB(30,30,30)
+open.TextColor3 = Color3.new(1,1,1)
+open.Draggable = true
+Instance.new("UICorner",open).CornerRadius = UDim.new(1,0)
+local s1 = Instance.new("UIStroke",open)
+rainbow(s1)
 
 -- 📦 เมนู
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0,300,0,220)
-main.Position = UDim2.new(0.5,-150,0.5,-110)
-main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+main.Size = UDim2.new(0,320,0,240)
+main.Position = UDim2.new(0.5,-160,0.5,-120)
+main.BackgroundColor3 = Color3.fromRGB(15,15,15)
 main.Visible = false
 main.Active = true
 main.Draggable = true
-
-Instance.new("UICorner", main).CornerRadius = UDim.new(0,10)
-local stroke2 = Instance.new("UIStroke", main)
-rainbow(stroke2)
+Instance.new("UICorner",main).CornerRadius = UDim.new(0,12)
+local s2 = Instance.new("UIStroke",main)
+rainbow(s2)
 
 -- ❌ ปิด
 local close = Instance.new("TextButton", main)
@@ -70,117 +63,141 @@ close.BackgroundColor3 = Color3.fromRGB(255,0,0)
 -- 🏷️ ชื่อ
 local title = Instance.new("TextLabel", main)
 title.Size = UDim2.new(1,0,0,30)
-title.Text = "kuya Graphics fps"
+title.Text = "kuya The graphics v1.01"
 title.BackgroundTransparency = 1
 title.TextColor3 = Color3.new(1,1,1)
 
--- 🔘 สร้างปุ่ม
-local function makeBtn(text, posY)
+-- 🔘 ปุ่ม
+local function btn(text,y)
     local b = Instance.new("TextButton", main)
     b.Size = UDim2.new(0.9,0,0,40)
-    b.Position = UDim2.new(0.05,0,0,posY)
+    b.Position = UDim2.new(0.05,0,0,y)
     b.Text = text.." : OFF"
     b.BackgroundColor3 = Color3.fromRGB(255,0,0)
     b.TextColor3 = Color3.new(1,1,1)
-    Instance.new("UICorner", b)
+    Instance.new("UICorner",b)
     return b
 end
 
-local b1 = makeBtn("ลบเสื้อผ้า+หน้า",40)
-local b2 = makeBtn("โลกดินน้ำมัน",90)
-local b3 = makeBtn("ลบสิ่งไม่จำเป็น",140)
+local b1 = btn("ลบเสื้อผ้า/หน้า/ผม",40)
+local b2 = btn("โลกดินน้ำมัน",90)
+local b3 = btn("ลบต้นไม้+เอฟเฟค",140)
 
 -- 📊 FPS
-local fpsLabel = Instance.new("TextLabel", gui)
-fpsLabel.Position = UDim2.new(1,-120,0,10)
-fpsLabel.Size = UDim2.new(0,110,0,30)
-fpsLabel.BackgroundColor3 = Color3.fromRGB(20,20,20)
-fpsLabel.TextScaled = true
-fpsLabel.TextColor3 = Color3.new(1,1,1)
+local fps = Instance.new("TextLabel", gui)
+fps.Position = UDim2.new(1,-120,0,10)
+fps.Size = UDim2.new(0,110,0,30)
+fps.BackgroundColor3 = Color3.fromRGB(20,20,20)
+fps.TextScaled = true
+fps.TextColor3 = Color3.new(1,1,1)
+local s3 = Instance.new("UIStroke",fps)
+rainbow(s3)
 
-local stroke3 = Instance.new("UIStroke", fpsLabel)
-rainbow(stroke3)
-
-local frames, last = 0, tick()
+local f, t = 0, tick()
 RunService.RenderStepped:Connect(function()
-    frames += 1
-    if tick()-last >= 1 then
-        fpsLabel.Text = "FPS: "..frames
-        frames = 0
-        last = tick()
+    f+=1
+    if tick()-t>=1 then
+        fps.Text="FPS: "..f
+        f=0 t=tick()
     end
 end)
 
--- 🔘 เปิด/ปิด UI
-toggleBtn.MouseButton1Click:Connect(function()
-    clickSound()
-    toggleBtn.Visible = false
-    main.Visible = true
-    main.Size = UDim2.new(0,0,0,0)
-    TweenService:Create(main,TweenInfo.new(0.3),{Size=UDim2.new(0,300,0,220)}):Play()
+-- 🔘 เปิด UI
+open.MouseButton1Click:Connect(function()
+    click()
+    open.Visible=false
+    main.Visible=true
+    main.Size=UDim2.new(0,0,0,0)
+    TweenService:Create(main,TweenInfo.new(0.25),{Size=UDim2.new(0,320,0,240)}):Play()
 end)
 
+-- ❌ ปิด UI
 close.MouseButton1Click:Connect(function()
-    clickSound()
-    main.Visible = false
-    toggleBtn.Visible = true
+    click()
+    main.Visible=false
+    open.Visible=true
 end)
 
--- 🧠 ฟังก์ชั่น
-local function toggle(btn, func)
-    local on = false
-    btn.MouseButton1Click:Connect(function()
-        clickSound()
-        on = not on
-        btn.Text = btn.Text:split(":")[1].." : "..(on and "ON" or "OFF")
-        btn.BackgroundColor3 = on and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+-- ⚙️ Toggle
+local function toggle(b,func)
+    local on=false
+    b.MouseButton1Click:Connect(function()
+        click()
+        on=not on
+        b.Text=b.Text:split(":")[1].." : "..(on and "ON" or "OFF")
+        b.BackgroundColor3= on and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
         func(on)
     end)
 end
 
--- 💇 ลบเสื้อผ้า+หน้า
+-- 💇 ลบผม/เสื้อ/หน้า
 toggle(b1,function(on)
-    if on then
-        for _,plr in pairs(Players:GetPlayers()) do
-            if plr.Character then
-                for _,v in pairs(plr.Character:GetDescendants()) do
-                    if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Decal") then
-                        v:Destroy()
-                    end
-                end
+    local function clean(c)
+        for _,v in pairs(c:GetDescendants()) do
+            if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Decal") then
+                v:Destroy()
             end
-        end
-    end
-end)
-
--- 🌍 โลกดินน้ำมัน
-toggle(b2,function(on)
-    if on then
-        for _,v in pairs(workspace:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.Material = Enum.Material.Plastic
-                v.Reflectance = 0
-            end
-        end
-    end
-end)
-
--- 💥 ลบสิ่งไม่จำเป็น
-toggle(b3,function(on)
-    if on then
-        for _,v in pairs(workspace:GetDescendants()) do
-            if v:IsA("ParticleEmitter")
-            or v:IsA("Trail")
-            or v:IsA("Beam")
-            or v:IsA("Explosion")
-            or v:IsA("Fire")
-            or v:IsA("Smoke")
-            or v:IsA("Sparkles")
-            or v:IsA("Decal") then
+            if v:IsA("Accessory") then
                 v:Destroy()
             end
         end
     end
+
+    if on then
+        for _,p in pairs(Players:GetPlayers()) do
+            if p.Character then clean(p.Character) end
+            p.CharacterAdded:Connect(function(c)
+                task.wait(1)
+                clean(c)
+            end)
+        end
+    end
 end)
 
-print("🔥 kuya Graphics fps โหลดแล้ว")
+-- 🌍 ดินน้ำมัน
+toggle(b2,function(on)
+    if on then
+        for _,v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Material=Enum.Material.Plastic
+                v.Reflectance=0
+            end
+        end
+    end
+end)
+
+-- 💥 ลบต้นไม้+เอฟเฟค
+toggle(b3,function(on)
+
+    local function remove(v)
+        if v:IsA("ParticleEmitter")
+        or v:IsA("Trail")
+        or v:IsA("Beam")
+        or v:IsA("Explosion")
+        or v:IsA("Fire")
+        or v:IsA("Smoke")
+        or v:IsA("Sparkles") then
+            v:Destroy()
+        end
+
+        if v:IsA("BasePart") then
+            local n=v.Name:lower()
+            if n:find("tree") or n:find("leaf") or n:find("grass") then
+                v:Destroy()
+            end
+        end
+    end
+
+    if on then
+        for _,v in pairs(workspace:GetDescendants()) do
+            remove(v)
+        end
+
+        workspace.DescendantAdded:Connect(function(v)
+            task.wait()
+            remove(v)
+        end)
+    end
+end)
+
+print("🔥 kuya The graphics v1.01 loaded")
